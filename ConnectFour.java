@@ -1,3 +1,4 @@
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
@@ -31,10 +32,14 @@ public class ConnectFour {
   // Create the user interface
   UI ui;
   try {
-   Class<? extends UI> uiClass= Class.forName(args[0]).asSubclass(UI.class);
-   ui= uiClass.newInstance();
+   Class<? extends UI> uiClass = Class.forName(args[0]).asSubclass(UI.class);
+   Constructor<? extends UI> constructor = uiClass.getDeclaredConstructor();
+   ui = constructor.newInstance();
   } catch (ClassNotFoundException err) {
    System.out.println("The first argument must be the name of a class");
+   return;
+  } catch (NoSuchMethodException e) {
+   System.err.println("No default constructor found for class: " + args[0]);
    return;
   } catch (ClassCastException err) {
    System.out.println("The first argument must be the name of a class extending the UI class");
@@ -44,6 +49,9 @@ public class ConnectFour {
    return;
   } catch (IllegalAccessException err) {
    System.out.println("The first argument must be the name of a non-abstract class with a public nullary constructor");
+   return;
+  } catch (InvocationTargetException e) {
+   System.err.println("Constructor threw an exception for the class: " + args[0]);
    return;
   }
 
