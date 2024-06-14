@@ -18,6 +18,7 @@ public class Random extends SynchronousPlayer {
 	 *  Precondition: board is not null and has at least one possible move. */
     public @Override Move getMove(Board board) {
 		//TODO: part 1 of A5
-    	return new Move(0);
+		Move[] moves = board.getPossibleMoves();
+    	return moves[Math.abs(this.random.nextInt()) % moves.length];
 	}
 }
