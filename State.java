@@ -1,4 +1,5 @@
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 /** An instance represents a potential state of a game of Connect Four. */
 public class State {
@@ -45,7 +46,13 @@ public class State {
         // children of this State. Note that field value gives the best value over all children.
         // Study the spec of class java.util.SortedMap to see how you can enumerate
         // states in children in order to look at their values.
-     return null;
+        for (Move move : children.keySet()) {
+            State childState = children.get(move);
+            if (childState.value == this.value) {
+                return move;
+            }
+        }
+        return null;
     }
     
     /** If depth = zero, this does nothing.
@@ -61,6 +68,17 @@ public class State {
         //Hint: Field children is a SortedMap. SortedMap is an interface. So to
         // create an new object to store in field children, you need to use some class
         // that implements SortedMap. We suggest using class java.util.TreeMap.
+        if (depth == 0) return;
+        if (!isExpanded()) {
+            children = new TreeMap<>();
+            for (Move move : board.getPossibleMoves()) {
+                Board newBoard = new Board(board, player, move);
+                children.put(move, new State(ai, newBoard, player.getNext()));
+            }
+        }
+        for (State child : children.values()) {
+            child.expandUpTo(depth - 1);
+        }
     }
     
     /** Compute and store the value of this state in field value.
@@ -77,6 +95,25 @@ public class State {
         //   the same as field ai.
         // Note that step 4 requires calling minimax on the children.
         // Note that there is a method for computing preferred values.
+        Turn c4 = board.hasConnectFour();
+        if(c4 != null) {
+            if (c4 == ai) {
+                this.value = Integer.MAX_VALUE;
+            } else {
+                this.value = Integer.MIN_VALUE;
+            }
+        } else if(board.isFull()) {
+            this.value = 0;
+        } else if(!this.isExpanded()) {
+            this.value = computeBoardValue();
+        } else {
+            int bestValue = (player == ai) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+            for (State child : children.values()) {
+                child.computeMinimax();
+                bestValue = preferredValue(bestValue, child.value);
+            }
+            this.value = bestValue;
+        }
     }
     
     /** Compute the preferred value for this state's player. */
