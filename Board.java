@@ -73,7 +73,16 @@ public class Board {
         //TODO: part 1 of A5
         // Hint. Read the spec carefully. Study the class invariant.
         //       All methods you have to call are in this class.
-    	return new Move[0];
+        if(hasConnectFour() != null || isFull()) {
+            return new Move[0];
+        }
+        Move[] moves = new Move[NUM_COLS];
+        for(int i = 0; i < NUM_COLS; i++) {
+            if(!columnIsFull(i)) {
+                moves[i] = new Move(i);
+            }
+        }
+    	return moves;
     }
 
     /** Return a representation of this board */
