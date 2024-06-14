@@ -76,13 +76,14 @@ public class Board {
         if(hasConnectFour() != null || isFull()) {
             return new Move[0];
         }
-        Move[] moves = new Move[NUM_COLS];
+        List<Move> moveList = new ArrayList<>();
         for(int i = 0; i < NUM_COLS; i++) {
             if(!columnIsFull(i)) {
-                moves[i] = new Move(i);
+                moveList.add(new Move(i));
             }
         }
-    	return moves;
+    	Move[] moves = new Move[moveList.size()];
+        return moveList.toArray(moves);
     }
 
     /** Return a representation of this board */
