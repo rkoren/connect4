@@ -14,7 +14,7 @@ public class Setup {
 	     *   2. "Random" The the next arg is a seed for the random number generator
 	     *   3. "AI"     The next arg is the depth of the game tree, > 0.
 	     */ 
-		String[] setup= {"GUI", "Human", "Yellow", "AI", "7"};
+		String[] setup= {"GUI", "AI", "7", "Human", "Bob"};
 		ConnectFour.main(setup);
 	}
 }

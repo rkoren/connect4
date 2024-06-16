@@ -95,6 +95,10 @@ public class State {
         //   the same as field ai.
         // Note that step 4 requires calling minimax on the children.
         // Note that there is a method for computing preferred values.
+        this.value = minimax(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private int minimax(int alpha, int beta) {
         Turn c4 = board.hasConnectFour();
         if(c4 != null) {
             if (c4 == ai) {
@@ -107,12 +111,29 @@ public class State {
         } else if(!this.isExpanded()) {
             this.value = computeBoardValue();
         } else {
-            int bestValue = (player == ai) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-            for (State child : children.values()) {
-                child.computeMinimax();
-                bestValue = preferredValue(bestValue, child.value);
+            if (player == ai) {
+                int maxVal = Integer.MIN_VALUE;
+                for (State child : children.values()) {
+                    int val = child.minimax(alpha, beta);
+                    maxVal = preferredValue(maxVal, val);
+                    alpha = preferredValue(alpha, val);
+                    if (alpha > beta) {
+                        break;
+                    }
+                }
+                return maxVal;
+            } else {
+                int minVal = Integer.MAX_VALUE;
+                for (State child : children.values()) {
+                    int val = child.minimax(alpha, beta);
+                    minVal = preferredValue(minVal, val);
+                    alpha = preferredValue(beta, val);
+                    if (alpha > beta) {
+                        break;
+                    }
+                }
+                return minVal;
             }
-            this.value = bestValue;
         }
     }
     
@@ -145,7 +166,7 @@ public class State {
                 " will play next on the board below as " + player.getInitial() + "\n";
         str= str + indent + "Value: " + value + "\n";
         str= str + board.toString(indent) + "\n";
-        if (children != null && children.size() > 0) {
+        if (children != null && !children.isEmpty()) {
             str= str + indent + "Children at depth "+ (depth+1) + ":\n" +
                     indent + "----------------\n";
 
