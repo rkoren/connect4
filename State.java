@@ -89,7 +89,7 @@ public class State {
      *    4. Otherwise, this state's value is its player's preferred value of its
      *       child states' values. */
     public void computeMinimax() {
-     //TODO: part 2 of A5
+        //TODO: part 2 of A5
         //Hint: Implement in the order given by the specification.
         // Note that the player to move is in field player, which may or not be
         //   the same as field ai.
@@ -103,13 +103,17 @@ public class State {
         if(c4 != null) {
             if (c4 == ai) {
                 this.value = Integer.MAX_VALUE;
+                return this.value;
             } else {
                 this.value = Integer.MIN_VALUE;
+                return this.value;
             }
         } else if(board.isFull()) {
             this.value = 0;
+            return 0;
         } else if(!this.isExpanded()) {
             this.value = computeBoardValue();
+            return this.value;
         } else {
             if (player == ai) {
                 int maxVal = Integer.MIN_VALUE;
@@ -121,7 +125,8 @@ public class State {
                         break;
                     }
                 }
-                return maxVal;
+                this.value = maxVal;
+                return this.value;
             } else {
                 int minVal = Integer.MAX_VALUE;
                 for (State child : children.values()) {
@@ -132,7 +137,8 @@ public class State {
                         break;
                     }
                 }
-                return minVal;
+                this.value = minVal;
+                return this.value;
             }
         }
     }
